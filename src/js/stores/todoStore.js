@@ -24,11 +24,17 @@ class TodoStore extends EventEmmiter{
     }
     
     addTask(data){
-        
         this.model.todos.push({
-            done: data.done,
+            done: false,
             title: data.title,
             id: (Math.random()*10)
+        });
+        this.emit('change');
+    }
+    
+    deleteTask(taskId){
+        this.model.todos = this.model.todos.filter(function(item){
+            return (item.id != taskId);
         });
         this.emit('change');
     }
@@ -37,7 +43,20 @@ class TodoStore extends EventEmmiter{
         console.log('We have received the action', action);
         switch(action.actionType)
         {
-            case "TODO_ADD_TASK": this.addTask(action.data); break;
+            case "TODO_ADD_TASK": 
+                this.addTask(action.data); 
+                break;
+                
+            case "DELETE_TASK": 
+                this.deleteTask(action.data); 
+                break;
+                
+            case "ADD_TASK": 
+                this.addTask(action.data); 
+                break;
+                
+             default:
+                throw "The action not found";
         }
         
     }
